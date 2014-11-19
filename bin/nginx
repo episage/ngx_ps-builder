@@ -1,0 +1,36 @@
+#!/bin/bash
+
+cd ~
+
+NPS_VERSION=1.9.32.2
+NGINX_VERSION=1.6.2
+
+
+curl -L https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VERSION}-beta.tar.gz | tar -zxv
+
+cd ~/ngx_pagespeed-${NPS_VERSION}-beta/
+
+curl https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}.tar.gz | tar -zxv
+
+
+cd ~
+
+curl http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz | tar -zxv
+
+cd nginx-${NGINX_VERSION}/
+
+./configure \
+    --with-http_ssl_module \
+    --with-ipv6 \
+    --with-http_realip_module \
+    --add-module=$HOME/ngx_pagespeed-${NPS_VERSION}-beta
+
+make
+make install
+
+# export AWS_ACCESS_KEY_ID=$S3_KEY
+# export AWS_SECRET_ACCESS_KEY=$S3_SECRET
+
+tar -cz --exclude-vcs -f ~/dist/nginx-${NGINX_VERSION}-${NPS_VERSION}.tar.gz /usr/local/nginx
+cp -R /usr/local/nginx ~/dist/nginx
+# | gof3r put -b $S3_BUCKET_PACKAGES -k nginx-${NGINX_VERSION}.tar.gz --endpoint $S3_ENDPOINT

@@ -1,0 +1,15 @@
+containers:
+    builder:
+        image: michaloo/ngx_ps-builder
+        dockerfile: .
+        run:
+            volume: ["./dist:/root/dist"]
+    tester:
+        image: michaloo/ngx_ps-builder
+        dockerfile: .
+        run:
+            volume: ["./dist:/root/dist", "./bin:/builder"]
+            rm: true
+            interactive: true
+            tty: true
+            cmd: ["-c", "bash"]
