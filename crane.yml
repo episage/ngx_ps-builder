@@ -3,6 +3,7 @@ containers:
         image: michaloo/ngx_ps-builder
         dockerfile: .
         run:
+            net: host
             volume: ["./dist:/root/dist"]
     tester:
         image: michaloo/ngx_ps-builder
